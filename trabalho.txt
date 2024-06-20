@@ -1,0 +1,62 @@
+# Classe Base Produto
+class Produto:
+    def __init__(self, nome, preco_custo, quantidade):
+        self.nome = nome
+        self.preco_custo = preco_custo
+        self.quantidade = quantidade
+
+    def calcular_preco_venda(self):
+        raise NotImplementedError("Este método deve ser implementado nas subclasses")
+
+# Classe para Produtos Agrícolas
+class ProdutoAgricola(Produto):
+    def calcular_preco_venda(self):
+        if self.quantidade <= 100:
+            margem_lucro = 0.08
+            adicional_transporte = 0.10 * self.quantidade
+        elif 100 < self.quantidade <= 200:
+            margem_lucro = 0.05
+            adicional_transporte = 0.08 * self.quantidade
+        else:
+            margem_lucro = 0.035
+            adicional_transporte = 0.05 * self.quantidade
+
+        preco_venda = self.preco_custo * (1 + margem_lucro) + adicional_transporte
+        return preco_venda
+
+# Classe para Produtos Industrializados
+class ProdutoIndustrializado(Produto):
+    def calcular_preco_venda(self):
+        if self.quantidade <= 50:
+            margem_lucro = 0.12
+            adicional_transporte = 0.35 * self.quantidade
+        elif 51 <= self.quantidade <= 200:
+            margem_lucro = 0.105
+            adicional_transporte = 0.30 * self.quantidade
+        else:
+            margem_lucro = 0.09
+            adicional_transporte = 0.25 * self.quantidade
+
+        preco_sem_impostos = self.preco_custo * (1 + margem_lucro) + adicional_transporte
+        preco_com_impostos = preco_sem_impostos * 1.05 * 1.12
+        return preco_com_impostos
+
+def main():
+    tipo_produto = input("Digite o tipo de produto (agricola/industrializado): ").strip().lower()
+    nome = input("Digite o nome do produto: ")
+    preco_custo = float(input("Digite o preço de custo do produto: "))
+    quantidade = float(input("Digite a quantidade do produto: "))
+
+    if tipo_produto == "agricola":
+        produto = ProdutoAgricola(nome, preco_custo, quantidade)
+    elif tipo_produto == "industrializado":
+        produto = ProdutoIndustrializado(nome, preco_custo, quantidade)
+    else:
+        print("Tipo de produto inválido!")
+        return
+
+    preco_venda = produto.calcular_preco_venda()
+    print(f"Preço de venda do {nome}: R$ {preco_venda:.2f}")
+
+if __name__ == "__main__":
+    main()
